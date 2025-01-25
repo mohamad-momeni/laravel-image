@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-   && docker-php-ext-install -j$(nproc) exif pdo pdo_mysql imap ldap pcntl zip \
+   && docker-php-ext-install -j$(nproc) exif gd pdo pdo_mysql imap ldap pcntl zip \
    && pecl install redis swoole && docker-php-ext-enable redis swoole
 
 COPY resources/ixed.8.3.lin /tmp/sourceguardian.so
