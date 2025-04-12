@@ -14,6 +14,8 @@ RUN apt-get update && apt-get install -y \
    libldap2-dev \
    # Required for Zip extension
    libzip-dev \
+   # Required for Yaml extension
+   libyaml-dev \
    # Required for Swoole extension
    libbrotli-dev libssl-dev \
    # Utilities
@@ -27,7 +29,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
    && docker-php-ext-install -j$(nproc) exif gd pdo pdo_mysql imap ldap pcntl zip \
-   && pecl install redis swoole && docker-php-ext-enable redis swoole
+   && pecl install yaml redis swoole && docker-php-ext-enable yaml redis swoole
 
 COPY resources/ixed.8.3.lin /tmp/sourceguardian.so
 RUN mv /tmp/sourceguardian.so $(php-config --extension-dir) && echo 'extension=sourceguardian.so' > /usr/local/etc/php/conf.d/docker-php-ext-sourceguardian.ini
