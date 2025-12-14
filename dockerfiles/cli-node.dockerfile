@@ -1,6 +1,6 @@
 FROM node:24 AS node
 FROM composer:2 AS composer
-FROM php:8.3-cli
+FROM php:8.4-cli
 
 LABEL maintainer="Mohamad Momeni"
 ENV TZ=Asia/Tehran
@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    # Required for Postgres
    libpq-dev \
    # Required for IMAP extension
-   libc-client-dev libkrb5-dev \
+   libimap-dev \
    # Required for LDAP extension
    libldap2-dev \
    # Required for Zip extension
@@ -18,18 +18,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    # Required for Yaml extension
    libyaml-dev \
    # Required for Swoole extension
-   libbrotli-dev libssl-dev \
+   libssl-dev \
    # Utilities
    nano \
    && apt-get clean \
    && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-   && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
    && docker-php-ext-install -j$(nproc) exif pdo_mysql pdo_pgsql pgsql imap ldap pcntl zip \
-   && pecl install yaml redis swoole && docker-php-ext-enable yaml redis swoole
+   && pecl install yaml redis swoole imap && docker-php-ext-enable yaml redis swoole imap
 
-COPY resources/ixed.8.3.lin /tmp/sourceguardian.so
+COPY resources/sourceguardian.so /tmp/sourceguardian.so
 RUN mv /tmp/sourceguardian.so $(php-config --extension-dir) && echo 'extension=sourceguardian.so' > /usr/local/etc/php/conf.d/docker-php-ext-sourceguardian.ini
 COPY resources/php.ini /usr/local/etc/php/conf.d/custom.ini
 
