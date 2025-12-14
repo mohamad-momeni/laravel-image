@@ -11,7 +11,7 @@ jobs:
       packages: write
     strategy:
       matrix:
-        dockerfile: ['apache', 'apache-node']
+        dockerfile: ['cli', 'cli-node']
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
