@@ -1,6 +1,6 @@
 FROM node:24 AS node
 FROM composer:2 AS composer
-FROM php:8.4-cli
+FROM php:8.4-cli-bookworm
 
 LABEL maintainer="Mohamad Momeni"
 ENV TZ=Asia/Tehran
@@ -9,6 +9,8 @@ WORKDIR /var/www
 RUN apt-get update && apt-get install -y --no-install-recommends \
    # Required for Postgres
    libpq-dev \
+   # Required for IMAP extension
+   libc-client-dev libkrb5-dev \
    # Required for LDAP extension
    libldap2-dev \
    # Required for Zip extension
