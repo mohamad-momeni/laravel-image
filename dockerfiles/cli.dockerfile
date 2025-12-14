@@ -8,8 +8,6 @@ WORKDIR /var/www
 RUN apt-get update && apt-get install -y --no-install-recommends \
    # Required for Postgres
    libpq-dev \
-   # Required for IMAP extension
-   libimap-dev \
    # Required for LDAP extension
    libldap2-dev \
    # Required for Zip extension
@@ -24,8 +22,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-   && docker-php-ext-install -j$(nproc) exif pdo_mysql pdo_pgsql pgsql imap ldap pcntl zip \
-   && pecl install yaml redis swoole imap && docker-php-ext-enable yaml redis swoole imap
+   && docker-php-ext-install -j$(nproc) exif pdo_mysql pdo_pgsql pgsql ldap pcntl zip \
+   && pecl install imap yaml redis swoole && docker-php-ext-enable imap yaml redis swoole
 
 COPY resources/sourceguardian.so /tmp/sourceguardian.so
 RUN mv /tmp/sourceguardian.so $(php-config --extension-dir) && echo 'extension=sourceguardian.so' > /usr/local/etc/php/conf.d/docker-php-ext-sourceguardian.ini
