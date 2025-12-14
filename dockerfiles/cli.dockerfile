@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    # Required for Yaml extension
    libyaml-dev \
    # Required for Swoole extension
-   libssl-dev \
+   libbrotli-dev libssl-dev \
    # Utilities
    nano \
    && apt-get clean \
