@@ -8,6 +8,8 @@ WORKDIR /var/www
 RUN apt-get update && apt-get install -y --no-install-recommends \
    # Required for Postgres
    libpq-dev \
+   # Required for GD extension
+   zlib1g-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
    # Required for IMAP extension
    libc-client-dev libkrb5-dev \
    # Required for LDAP extension
@@ -23,8 +25,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    && apt-get clean \
    && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-   && docker-php-ext-install -j$(nproc) exif pdo_mysql pdo_pgsql pgsql ldap pcntl zip \
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \ 
+   && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+   && docker-php-ext-install -j$(nproc) exif gd pdo_mysql pdo_pgsql pgsql ldap pcntl zip \
    && pecl install imap yaml redis swoole && docker-php-ext-enable imap yaml redis swoole
 
 COPY resources/sourceguardian.so /tmp/sourceguardian.so
