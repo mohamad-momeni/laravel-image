@@ -1,6 +1,6 @@
 FROM node:24 AS node
 FROM composer:2 AS composer
-FROM php:8.4-cli-bookworm
+FROM php:8.5-cli
 
 LABEL maintainer="Mohamad Momeni"
 ENV TZ=Asia/Tehran
@@ -11,8 +11,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
    libpq-dev \
    # Required for GD extension
    zlib1g-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
-   # Required for IMAP extension
-   libc-client-dev libkrb5-dev \
    # Required for LDAP extension
    libldap2-dev \
    # Required for Zip extension
@@ -28,8 +26,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \ 
    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-   && docker-php-ext-install -j$(nproc) exif gd pdo_mysql pdo_pgsql pgsql ldap pcntl zip \
-   && pecl install imap yaml redis swoole && docker-php-ext-enable imap yaml redis swoole
+   && docker-php-ext-install -j$(nproc) exif gd pdo_mysql pdo_pgsql pgsql ldap bcmath pcntl zip \
+   && pecl install yaml redis swoole && docker-php-ext-enable yaml redis swoole
 
 COPY resources/sourceguardian.so /tmp/sourceguardian.so
 RUN mv /tmp/sourceguardian.so $(php-config --extension-dir) && echo 'extension=sourceguardian.so' > /usr/local/etc/php/conf.d/docker-php-ext-sourceguardian.ini
